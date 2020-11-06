@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import getQuotes from "./services/getQuotes";
 
 function App() {
+  const [quote, setQuote] = useState({});
+  const [savedQuotes, setSavedQuotes] = useState([]);
+
+  useEffect(() => {
+    setRandomQuote();
+  }, []);
+
+  function setRandomQuote() {
+    getQuotes().then((data) =>
+      setQuote({ date: data.appeared_at, text: data.value })
+    );
+  }
+
+  function saveQuote() {
+    setSavedQuotes([...savedQuotes, quote]);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <p>{quote.text}</p>
+      <button onClick={setRandomQuote}>Talk shit!</button>
+      <button onClick={saveQuote}>Save that shit!</button>
+      {savedQuotes.map(({ text }) => (
+        <p>{text}</p>
+      ))}
     </div>
   );
 }
